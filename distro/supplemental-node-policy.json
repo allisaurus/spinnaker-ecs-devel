@@ -1,0 +1,23 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:Describe*",
+                "ec2:ExportClientVpnClientCertificateRevocationList",
+                "ec2:ExportClientVpnClientConfiguration",
+                "ec2:SearchTransitGatewayRoutes",
+                "ec2:GetTransitGatewayAttachmentPropagations",
+                "ec2:GetTransitGatewayRouteTablePropagations",
+                "ec2:GetTransitGatewayRouteTableAssociations"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::451685053503:role/SpinnakerManaged"
+        }
+    ]
+}
