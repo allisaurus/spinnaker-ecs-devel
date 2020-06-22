@@ -164,19 +164,14 @@ kubectl get nodes  // should output list of 5 nodes
 aws eks update-kubeconfig --name eks-spinnaker --region=${AWS_REGION} --alias eks-spinnaker
 ```
 
-2. Enable K8s with Halyard
-```
-hal config provider kubernetes enable
-```
-
-3. Configure a service account for the EKS cluster. (Learn more about [service accounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/))
+2. Configure a service account for the EKS cluster. (Learn more about [service accounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/))
 ```
 kubectl config use-context eks-spinnaker
 
 CONTEXT=$(kubectl config current-context)
 
 // create a service account for the current context
-kubectl apply --context $CONTEXT -f https://spinnaker.io/downloads/kubernetes/service-account.yml
+kubectl apply --context $CONTEXT -f http://spinnaker.io/downloads/kubernetes/service-account.yml
 
 // extract service account token
 TOKEN=$(kubectl get secret --context $CONTEXT \
@@ -192,14 +187,14 @@ kubectl config set-credentials ${CONTEXT}-token-user --token $TOKEN
 kubectl config set-context $CONTEXT --user ${CONTEXT}-token-user
 ```
 
-4. Enable Kubernetes provider and add the `eks-spinnaker` account with Halyard
+3. Enable Kubernetes provider and add the `eks-spinnaker` account with Halyard
 ```
 hal config provider kubernetes enable
 
 hal config provider kubernetes account add eks-spinnaker --provider-version v2 --context $CONTEXT
 ```
 
-5. Configure Spinnaker installation type, account, and S3 storage
+4. Configure Spinnaker installation type, account, and S3 storage
  ```
 hal config deploy edit --type distributed --account-name eks-spinnaker
 
@@ -209,7 +204,7 @@ hal config storage s3 edit --access-key-id $ACCESS_KEY --secret-access-key --reg
 hal config storage edit --type s3
 ```
 
-6. Set the desired Spinnaker version and deploy
+5. Set the desired Spinnaker version and deploy
 ```
 // run 'hal version list' to see supported versions, run latest
 hal config version edit --version $VERSION 
@@ -217,12 +212,12 @@ hal config version edit --version $VERSION
 hal deploy apply
 ```
 
-7. Verify the installation is working
+6. Verify the installation is working
 ```
 kubectl -n spinnaker get svc   // should print names of running spinnaker services
 ```
 
-8. Expose `deck` and `gate` services via ELB
+7. Expose `deck` and `gate` services via ELB
 
 > WARNING: This will expose Spinnaker to the internet! Make sure you complete the subsequent "lock down" steps or another auth mechanism immediately after this step.
 
@@ -253,7 +248,7 @@ Reverify install, checking that `EXTERNAL-IP` values are set for `gate` and `dec
 kubectl -n spinnaker get svc
 ```
 
-9. Test and lock down access to `deck` & `gate`
+8. Test and lock down access to `deck` & `gate`
 * Navigating to `deck` endpoint given by previous svc output
 * Verfiy you can access Deck UI, view 'spin' application (and others)
 * Lock down security groups for spin-deck-public and spin-gate-public to trusted IPs
